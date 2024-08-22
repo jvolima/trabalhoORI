@@ -54,7 +54,6 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
   if (hash == NULL || hash->palavras == NULL) {
     return 0;
   }
-  printf("ola");
         
   int chave = valorString(novaPalavra);
   int pos = chaveDivisao(chave, hash->tamanho);
@@ -72,6 +71,7 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
 
   Node *novo = (Node*) malloc(sizeof(Node));
   Palavra palavra;
+  palavra.valor = (char*) malloc(strlen(novaPalavra) + 1);
   strcpy(palavra.valor, novaPalavra);
   palavra.listaPostagens = criaLista();
   insereLista(palavra.listaPostagens, novaPostagem);
