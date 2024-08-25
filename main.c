@@ -1,31 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "hash.h"
+#include "utilitarios.h"
 
 #define MAX_LINHA 500
 
 int main() {
   FILE *arquivoTweets;
   Palavra palavra;
-  Postagem postagem1, postagem2;
-  char nome[20], linha[MAX_LINHA], *valor;
+  Postagem postagem;
+  char nome[20], linha[MAX_LINHA], *valor, *stringPalavra;
 
-  Hash *hash = criaHash(11);
-
-  strcpy(nome, "Joao");
-  postagem1.rrn = 5;
-  postagem1.tamanhoLinha = 10;
-  postagem2.rrn = 7;
-  postagem2.tamanhoLinha = 14;
-
-  insereHash(hash, nome, postagem1);
-  insereHash(hash, nome, postagem2);
-  
-  buscaPalavra(hash, "Joao", &palavra);
-  printf("%s\n", palavra.valor);
-  printf("%d\n", quantidadeLista(palavra.listaPostagens));
-  
+  Hash *hash = criaHash(19);
+ 
   arquivoTweets = fopen("teste.csv", "r");
   if (arquivoTweets == NULL) {
     printf("Erro ao abrir arquivo de tweets.");
@@ -33,15 +22,24 @@ int main() {
   }
 
   while (fgets(linha, MAX_LINHA, arquivoTweets) != NULL) {
+    postagem.tamanhoLinha = strlen(linha);
+    postagem.rrn = ftell(arquivoTweets) - postagem.tamanhoLinha;
+
     strtok(linha, ",");
     strtok(NULL, ",");
     valor = strtok(NULL, "\n");
+    limparString(valor);
 
-    if (valor != NULL) {
-        printf("%s\n", valor);
-    } else {
-        printf("Valor não encontrado na linha: %s\n", linha);
+    stringPalavra = strtok(valor, " ");
+    while (stringPalavra != NULL) {
+      insereHash(hash, stringPalavra, postagem);
+      stringPalavra = strtok(NULL, " ");
     }
+  }
+
+  if (buscaPalavra(hash, "so", &palavra)) {
+    printf("%s\n", palavra.valor);
+    printf("%d\n", quantidadeLista(palavra.listaPostagens));
   }
 
   return 0;
