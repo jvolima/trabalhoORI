@@ -8,6 +8,7 @@ typedef struct {
 typedef struct hash Hash;
 
 Hash* criaHash(int);
+void liberaHash(Hash*);
 int valorString(char*);
 int insereHash(Hash*, char*, Postagem);
 int buscaPalavra(Hash*, char*, Palavra*);

@@ -3,15 +3,15 @@
 #include <string.h>
 #include "hash.h" 
 
-typedef struct no Node;
+typedef struct no No;
 struct no {
   Palavra palavra;
-  Node *prox;
+  No *prox;
 };
 
 struct hash {
   int tamanho;
-  Node **palavras;
+  No **palavras;
 };
 
 Hash* criaHash(int tamanho) {
@@ -20,7 +20,7 @@ Hash* criaHash(int tamanho) {
   if (hash != NULL) {
     int i;
     hash->tamanho = tamanho;
-    hash->palavras = (Node**) malloc(tamanho * sizeof(Node*));
+    hash->palavras = (No**) malloc(tamanho * sizeof(No*));
 
     if (hash->palavras == NULL) {
       free(hash);
@@ -33,6 +33,28 @@ Hash* criaHash(int tamanho) {
   }
 
   return hash;
+}
+
+void liberaHash(Hash *hash) {
+  if (hash == NULL) {
+    return;
+  }
+
+  for (int i = 0; i < hash->tamanho; i++) {
+    No *atual = hash->palavras[i];
+
+    while (atual != NULL) {
+      No *temp = atual;
+      atual = atual->prox;
+
+      liberaLista(temp->palavra.listaPostagens);
+      free(temp->palavra.valor);
+      free(temp);
+    }
+  }
+
+  free(hash->palavras);
+  free(hash);
 }
 
 int valorString(char *str) {
@@ -58,8 +80,8 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
   int chave = valorString(novaPalavra);
   int pos = chaveDivisao(chave, hash->tamanho);
 
-  Node *atual = hash->palavras[pos];
-  Node *anterior = NULL;
+  No *atual = hash->palavras[pos];
+  No *anterior = NULL;
   while (atual != NULL) {
     if ((strcmp(atual->palavra.valor, novaPalavra) == 0)) {
       insereLista(atual->palavra.listaPostagens, novaPostagem);
@@ -69,7 +91,7 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
     atual = atual->prox;
   }
 
-  Node *novo = (Node*) malloc(sizeof(Node));
+  No *novo = (No*) malloc(sizeof(No));
   Palavra palavra;
   palavra.valor = (char*) malloc(strlen(novaPalavra) + 1);
   strcpy(palavra.valor, novaPalavra);
@@ -95,8 +117,8 @@ int buscaPalavra(Hash *hash, char *str, Palavra *palavra) {
   int chave = valorString(str);
   int pos = chaveDivisao(chave, hash->tamanho);
 
-  Node *atual = hash->palavras[pos];
-  Node *anterior = NULL;
+  No *atual = hash->palavras[pos];
+  No *anterior = NULL;
   while (atual != NULL) {
     if ((strcmp(atual->palavra.valor, str) == 0)) {
       *palavra = atual->palavra;
