@@ -118,13 +118,11 @@ int buscaPalavra(Hash *hash, char *str, Palavra *palavra) {
   int pos = chaveDivisao(chave, hash->tamanho);
 
   No *atual = hash->palavras[pos];
-  No *anterior = NULL;
   while (atual != NULL) {
     if ((strcmp(atual->palavra.valor, str) == 0)) {
       *palavra = atual->palavra;
       return 1;
     }
-    anterior = atual;
     atual = atual->prox;
   }
   
