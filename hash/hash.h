@@ -1,5 +1,6 @@
 #include "lista.h"
 
+#pragma once
 typedef struct {
   char *valor; 
   Lista *listaPostagens;

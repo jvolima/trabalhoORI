@@ -8,7 +8,7 @@ CFLAGS = -Wall -Wextra -Werror
 TARGET = programa
 
 # Define the source files
-SRCS = main.c lista.c hash.c utilitarios.c
+SRCS = main.c hash/lista.c hash/hash.c set/set.c set/arvoreAvl.c utilitarios.c
 
 # Default rule to build the target
 all: $(TARGET)

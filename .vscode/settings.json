@@ -1,6 +1,5 @@
 {
   "files.associations": {
-    "string_view": "c",
-    "arvoreavl.h": "c"
+    "lista.h": "c"
   }
 }

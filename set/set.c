@@ -11,7 +11,7 @@ struct set {
 
 Set* criaSet() {
   Set* s = (Set*) malloc(sizeof(Set));
-  if (s != NULL){
+  if (s != NULL) {
     s->arv = cria_ArvAVL();
     s->quantidade = 0;
     s->iter = NULL;
@@ -25,7 +25,7 @@ void liberaSet(Set* s) {
     libera_ArvAVL(s->arv);
 
     struct iterator* no;
-    while(s->iter != NULL){
+    while(s->iter != NULL) {
       no = s->iter;
       s->iter = s->iter->prox;
       free(no);
@@ -35,12 +35,12 @@ void liberaSet(Set* s) {
   }
 }
 
-int insereSet(Set* s, int num) {
+int insereSet(Set* s, Postagem postagem) {
   if (s == NULL) {
     return 0;
   }
 
-  if (insere_ArvAVL(s->arv,num)) {
+  if (insere_ArvAVL(s->arv, postagem)) {
     s->quantidade++;
     return 1;
   }
@@ -56,12 +56,12 @@ int tamanhoSet(Set* s) {
   return s->quantidade;
 }
 
-int consultaSet(Set* s, int num) {
+int consultaSet(Set* s, Postagem postagem) {
   if(s == NULL) {
     return 0;
   }
 
-  return consulta_ArvAVL(s->arv,num);
+  return consulta_ArvAVL(s->arv, postagem);
 }
 
 void beginSet(Set *s){
@@ -97,13 +97,13 @@ void nextSet(Set *s) {
   }
 }
 
-void getItemSet(Set *s, int *num) {
+void getItemSet(Set *s, Postagem *postagem) {
   if (s == NULL) {
     return;
   }
 
   if (s->iter != NULL) {
-    *num = s->iter->valor;
+    *postagem = s->iter->valor;
   }
 }
 
@@ -112,17 +112,17 @@ Set* uniaoSet(Set* A, Set* B) {
     return NULL;
   }
 
-  int x;
+  Postagem postagem;
   Set *C = criaSet();
 
   for (beginSet(A); !endSet(A); nextSet(A)) {
-    getItemSet(A, &x);
-    insereSet(C,x);
+    getItemSet(A, &postagem);
+    insereSet(C, postagem);
   }
 
   for (beginSet(B); !endSet(B); nextSet(B)) {
-    getItemSet(B, &x);
-    insereSet(C,x);
+    getItemSet(B, &postagem);
+    insereSet(C, postagem);
   }
 
   return C;
@@ -133,22 +133,41 @@ Set* interseccaoSet(Set* A, Set* B) {
     return NULL;
   }
 
-  int x;
+  Postagem postagem;
   Set *C = criaSet();
 
   if (tamanhoSet(A) < tamanhoSet(B)) {
     for (beginSet(A); !endSet(A); nextSet(A)) {
-      getItemSet(A, &x);
-      if (consultaSet(B,x)) {
-        insereSet(C,x);
+      getItemSet(A, &postagem);
+      if (consultaSet(B, postagem)) {
+        insereSet(C, postagem);
       }   
     }
   } else {
     for (beginSet(B); !endSet(B); nextSet(B)) {
-      getItemSet(B, &x);
-      if (consultaSet(A,x)) {
-        insereSet(C,x);
+      getItemSet(B, &postagem);
+      if (consultaSet(A,postagem)) {
+        insereSet(C,postagem);
       }
+    }
+  }
+
+  return C;
+}
+
+Set* interseccaoSetComNot(Set* A, Set* B) {
+  if (A == NULL || B == NULL) {
+    return NULL;
+  }
+
+  Postagem postagem;
+  Set *C = criaSet(); 
+
+  for (beginSet(A); !endSet(A); nextSet(A)) {
+    getItemSet(A, &postagem);
+
+    if (!consultaSet(B, postagem)) {
+      insereSet(C, postagem);
     }
   }
 

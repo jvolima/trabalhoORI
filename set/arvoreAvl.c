@@ -3,7 +3,7 @@
 #include "arvoreAvl.h" 
 
 struct No {
-  int info;
+  Postagem info;
   int altura;
   struct No *esq;
   struct No *dir;
@@ -58,18 +58,18 @@ int maior(int x, int y) {
   return y;
 }
 
-int consulta_ArvAVL(ArvAVL *raiz, int valor) {
+int consulta_ArvAVL(ArvAVL *raiz, Postagem valor) {
   if (raiz == NULL) {
     return 0;
   }
 
   struct No* atual = *raiz;
   while (atual != NULL) {
-    if (valor == atual->info) {
+    if (valor.rrn == atual->info.rrn) {
       return 1;
     }
 
-    if (valor > atual->info) {
+    if (valor.rrn > atual->info.rrn) {
       atual = atual->dir;
     } else { 
       atual = atual->esq;
@@ -109,7 +109,7 @@ void RotacaoRL(ArvAVL *A) {
   RotacaoRR(A);
 }
 
-int insere_ArvAVL(ArvAVL *raiz, int valor){
+int insere_ArvAVL(ArvAVL *raiz, Postagem valor){
   int res;
   if (*raiz == NULL) {
     struct No *novo;
@@ -128,10 +128,10 @@ int insere_ArvAVL(ArvAVL *raiz, int valor){
   }
 
   struct No *atual = *raiz;
-  if (valor < atual->info) {
+  if (valor.rrn < atual->info.rrn) {
     if ((res = insere_ArvAVL(&(atual->esq), valor)) == 1) {
       if (fatorBalanceamento_No(atual) >= 2) {
-        if (valor < (*raiz)->esq->info) {
+        if (valor.rrn < (*raiz)->esq->info.rrn) {
           RotacaoLL(raiz);
         } else {
           RotacaoLR(raiz);
@@ -139,10 +139,10 @@ int insere_ArvAVL(ArvAVL *raiz, int valor){
       }
     }
   } else {
-    if(valor > atual->info) {
+    if(valor.rrn > atual->info.rrn) {
       if ((res = insere_ArvAVL(&(atual->dir), valor)) == 1) {
         if (fatorBalanceamento_No(atual) >= 2) {
-          if ((*raiz)->dir->info < valor) {
+          if ((*raiz)->dir->info.rrn < valor.rrn) {
             RotacaoRR(raiz);
           } else {
             RotacaoRL(raiz);

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "hash.h"
+#include "hash/hash.h"
 #include "utilitarios.h"
 
 #define MAX_LINHA 300
@@ -11,7 +11,7 @@
 int main() {
   Hash *hash = criaHash(19);
  
-  FILE *arquivoTweets = fopen("teste.csv", "r");
+  FILE *arquivoTweets = fopen("files/teste.csv", "r");
   if (arquivoTweets == NULL) {
     printf("Erro ao abrir arquivo de tweets.");
     exit(1);
@@ -35,10 +35,8 @@ int main() {
     }
   }
 
-  Palavra palavra;
   int escolha;
   char busca[MAX_BUSCA];
-  char linhaArquivo[MAX_LINHA];
   while (1) {
     printf("(1) Buscar nova palavra\n(2) Sair da busca\n");
     scanf("%d", &escolha);
@@ -48,19 +46,31 @@ int main() {
     }
 
     printf("Formule a sua busca utilizando operadores lógicos (AND, OR, NOT): ");
-    scanf("%s", busca);
+    scanf(" %[^\n]", busca);
 
-    if (!buscaPalavra(hash, busca, &palavra)) {
-      printf("Palavra não encontrada.\n\n");
-      continue;     
+    int numComponentes;
+    char **componentes = separarBuscaEmComponentes(busca, &numComponentes);
+
+    int tamanhoPostfix;
+    char **postfix = converterComponentesParaPostfix(componentes, numComponentes, &tamanhoPostfix);
+
+    Set *resultado = avaliarPostfix(hash, postfix, tamanhoPostfix);
+
+    for (beginSet(resultado); !endSet(resultado); nextSet(resultado)) {
+      char linhaSaida[MAX_LINHA];
+      Postagem postagemSaida;
+
+      getItemSet(resultado, &postagemSaida);
+      fseek(arquivoTweets, postagemSaida.rrn, SEEK_SET);
+      fgets(linhaSaida, postagemSaida.tamanhoLinha, arquivoTweets);
+      printf("%s\n", linhaSaida);
     }
 
-    Postagem *postagens = retornaLista(palavra.listaPostagens);
-    for (int i = 0; i < quantidadeLista(palavra.listaPostagens); i++) {
-      fseek(arquivoTweets, postagens[i].rrn, SEEK_SET);
-      fgets(linhaArquivo, postagens[i].tamanhoLinha, arquivoTweets);
-      printf("%s\n", linhaArquivo);  
+    for (int i = 0; i < numComponentes; i++) {
+      free(componentes[i]);
     }
+    free(componentes);
+    free(postfix);
 
     printf("\n");
   }
