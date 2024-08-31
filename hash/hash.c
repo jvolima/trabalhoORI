@@ -84,19 +84,32 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
   No *anterior = NULL;
   while (atual != NULL) {
     if ((strcmp(atual->palavra.valor, novaPalavra) == 0)) {
-      insereLista(atual->palavra.listaPostagens, novaPostagem);
-      return 1;
+      return insereLista(atual->palavra.listaPostagens, novaPostagem);
     }
     anterior = atual;
     atual = atual->prox;
   }
 
   No *novo = (No*) malloc(sizeof(No));
+  if (novo == NULL) {
+    return 0;
+  }
+
   Palavra palavra;
   palavra.valor = (char*) malloc(strlen(novaPalavra) + 1);
+  if (palavra.valor == NULL) {
+    return 0;
+  }
+  
   strcpy(palavra.valor, novaPalavra);
   palavra.listaPostagens = criaLista();
-  insereLista(palavra.listaPostagens, novaPostagem);
+  if (palavra.listaPostagens == NULL) {
+    return 0;
+  }
+
+  if (!insereLista(palavra.listaPostagens, novaPostagem)) {
+    return 0;
+  }
   novo->palavra = palavra;
   novo->prox = NULL;
 

@@ -17,7 +17,7 @@ void limparString(char* valor) {
   char stringLimpa[tamanho + 1];
 
   for (int i = 0; i < tamanho; i++) {
-    if (isalpha(valor[i])) {
+    if (isalpha(valor[i]) || isdigit(valor[i])) {
       stringLimpa[quantidadeCaracteresValidos++] = tolower(valor[i]);
     } else if ((valor[i] == '-' || valor[i] == '\'') && palavraComposta(valor, i, tamanho)) {
       stringLimpa[quantidadeCaracteresValidos++] = valor[i];
@@ -37,6 +37,10 @@ void limparString(char* valor) {
 
 char** separarBuscaEmComponentes(char* busca, int* numComponentes) {
   char** componentes = malloc(MAX_COMPONENTES * sizeof(char*));
+  if (componentes == NULL) {
+    return NULL;
+  }
+
   char* componente;
   int i = 0;
 
@@ -90,6 +94,10 @@ int precedencia(char* operacao) {
 
 char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tamanhoPostfix) {
   char** resultado = (char**) malloc (MAX_PILHA * sizeof(char*));
+  if (resultado == NULL) {
+    return NULL;
+  }
+
   char* pilha[MAX_PILHA];
   int topo = -1;
   int indice = 0;
@@ -98,6 +106,9 @@ char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tam
     char* componente = componentes[i];
 
     if (strcmp(componente, "NOT") != 0 && strcmp(componente, "AND") != 0 && strcmp(componente, "OR") != 0 && strcmp(componente, "(") != 0 && strcmp(componente, ")") != 0) {
+      for (int i = 0; componente[i] != '\0'; i++) {
+        componente[i] = tolower(componente[i]);
+      }
       resultado[indice] = componente;
       indice++;
     } else if (strcmp(componente, "(") == 0) {

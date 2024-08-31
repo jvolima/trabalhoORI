@@ -41,6 +41,11 @@ int main() {
     printf("(1) Buscar nova palavra\n(2) Sair da busca\n");
     scanf("%d", &escolha);
 
+    if (!(escolha == 1 || escolha == 2)) {
+      printf("Opção inválida!\n");
+      continue;
+    }
+
     if (escolha == 2) {
       break;
     }
