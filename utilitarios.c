@@ -153,12 +153,14 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
   for (int i = 0; i < quantidade; i++) {
     if (strcmp(postfix[i], "NOT") == 0) {
       if (elementoNegado != -1) {
+        printf("Busca inválida.\n");
         return NULL;
       }
       operadorNot = 1;
       elementoNegado = topo;
     } else if (strcmp(postfix[i], "AND") == 0) {
       if (topo < 1) {
+        printf("Busca inválida.\n");
         return NULL;
       }
     
@@ -180,6 +182,7 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
       elementoNegado = -1;
     } else if (strcmp(postfix[i], "OR") == 0) {
         if (topo < 1) { 
+          printf("Busca inválida.\n");
           return NULL;
         }
  
@@ -189,6 +192,7 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
         topo--;
 
         if (operadorNot) {
+          printf("Busca inválida.\n");
           return NULL;
         } else { 
           pilha[++topo] = uniaoSet(set1, set2);
@@ -208,6 +212,7 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
   }
 
   if (topo != 0) { 
+    printf("Busca inválida.\n");
     return NULL;
   }
 

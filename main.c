@@ -5,11 +5,11 @@
 #include "hash/hash.h"
 #include "utilitarios.h"
 
-#define MAX_LINHA 300
+#define MAX_LINHA 1000
 #define MAX_BUSCA 300
 
 int main() {
-  Hash *hash = criaHash(19);
+  Hash *hash = criaHash(1009);
  
   FILE *arquivoTweets = fopen("files/teste.csv", "r");
   if (arquivoTweets == NULL) {

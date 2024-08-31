@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "lista.h"
 
-#define TAMANHO_INICIAL 10
+#define TAMANHO_INICIAL 100
 
 struct lista {
   int quantidade;

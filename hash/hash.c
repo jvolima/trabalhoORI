@@ -2,16 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hash.h" 
-
-typedef struct no No;
-struct no {
-  Palavra palavra;
-  No *prox;
-};
+#include "arvoreRb.h"
 
 struct hash {
   int tamanho;
-  No **palavras;
+  ArvRB **palavras;
 };
 
 Hash* criaHash(int tamanho) {
@@ -20,15 +15,15 @@ Hash* criaHash(int tamanho) {
   if (hash != NULL) {
     int i;
     hash->tamanho = tamanho;
-    hash->palavras = (No**) malloc(tamanho * sizeof(No*));
-
+    hash->palavras = (ArvRB**) malloc(tamanho * sizeof(ArvRB*));
+  
     if (hash->palavras == NULL) {
       free(hash);
       return NULL;
     }
 
     for (i = 0; i < hash->tamanho; i++) {
-      hash->palavras[i] = NULL;
+      hash->palavras[i] = cria_arv_rb();
     }  
   }
 
@@ -41,16 +36,8 @@ void liberaHash(Hash *hash) {
   }
 
   for (int i = 0; i < hash->tamanho; i++) {
-    No *atual = hash->palavras[i];
-
-    while (atual != NULL) {
-      No *temp = atual;
-      atual = atual->prox;
-
-      liberaLista(temp->palavra.listaPostagens);
-      free(temp->palavra.valor);
-      free(temp);
-    }
+    ArvRB *atual = hash->palavras[i];
+    libera_red_black(atual);
   }
 
   free(hash->palavras);
@@ -80,28 +67,17 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
   int chave = valorString(novaPalavra);
   int pos = chaveDivisao(chave, hash->tamanho);
 
-  No *atual = hash->palavras[pos];
-  No *anterior = NULL;
-  while (atual != NULL) {
-    if ((strcmp(atual->palavra.valor, novaPalavra) == 0)) {
-      return insereLista(atual->palavra.listaPostagens, novaPostagem);
-    }
-    anterior = atual;
-    atual = atual->prox;
-  }
-
-  No *novo = (No*) malloc(sizeof(No));
-  if (novo == NULL) {
-    return 0;
-  }
-
   Palavra palavra;
   palavra.valor = (char*) malloc(strlen(novaPalavra) + 1);
   if (palavra.valor == NULL) {
     return 0;
   }
-  
   strcpy(palavra.valor, novaPalavra);
+
+  if (adicionar_postagem(hash->palavras[pos], palavra, novaPostagem)) {
+    return 1;
+  }
+
   palavra.listaPostagens = criaLista();
   if (palavra.listaPostagens == NULL) {
     return 0;
@@ -110,15 +86,9 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
   if (!insereLista(palavra.listaPostagens, novaPostagem)) {
     return 0;
   }
-  novo->palavra = palavra;
-  novo->prox = NULL;
 
-  if (anterior != NULL) {
-    anterior->prox = novo;
-  } else {
-    hash->palavras[pos] = novo;
-  }
-  
+  red_black_insert(hash->palavras[pos], palavra);
+
   return 1;
 }
 
@@ -130,14 +100,5 @@ int buscaPalavra(Hash *hash, char *str, Palavra *palavra) {
   int chave = valorString(str);
   int pos = chaveDivisao(chave, hash->tamanho);
 
-  No *atual = hash->palavras[pos];
-  while (atual != NULL) {
-    if ((strcmp(atual->palavra.valor, str) == 0)) {
-      *palavra = atual->palavra;
-      return 1;
-    }
-    atual = atual->prox;
-  }
-  
-  return 0;
+  return busca_chave(hash->palavras[pos], str, palavra);
 }
