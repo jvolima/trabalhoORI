@@ -1,6 +1,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "utilitarios.h"
 
 #define MAX_COMPONENTES 100
@@ -147,10 +148,15 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
   Set* pilha[MAX_PILHA];
   int topo = -1;
   int operadorNot = 0;
+  int elementoNegado = -1;
 
   for (int i = 0; i < quantidade; i++) {
     if (strcmp(postfix[i], "NOT") == 0) {
-      operadorNot = 1; 
+      if (elementoNegado != -1) {
+        return NULL;
+      }
+      operadorNot = 1;
+      elementoNegado = topo;
     } else if (strcmp(postfix[i], "AND") == 0) {
       if (topo < 1) {
         return NULL;
@@ -162,11 +168,16 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
       topo--;
 
       if (operadorNot) {
-        pilha[++topo] = interseccaoSetComNot(set2, set1);
+        if (elementoNegado == 0) {
+          pilha[++topo] = interseccaoSetComNot(set1, set2);
+        } else {
+          pilha[++topo] = interseccaoSetComNot(set2, set1);
+        }
       } else {
         pilha[++topo] = interseccaoSet(set1, set2);
       }
       operadorNot = 0;
+      elementoNegado = -1;
     } else if (strcmp(postfix[i], "OR") == 0) {
         if (topo < 1) { 
           return NULL;
