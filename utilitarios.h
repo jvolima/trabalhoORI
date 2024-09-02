@@ -1,5 +1,4 @@
-#include "set/set.h"
-#include "hash/hash.h"
+#include "estruturas/hash.h"
 
 int palavraComposta(char*, int, int);
 void limparString(char*);

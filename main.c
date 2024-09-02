@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "hash/hash.h"
+#include "estruturas/hash.h"
 #include "utilitarios.h"
 
 #define MAX_LINHA 1000
@@ -11,7 +11,7 @@
 int main() {
   Hash *hash = criaHash(1009);
  
-  FILE *arquivoTweets = fopen("files/teste.csv", "r");
+  FILE *arquivoTweets = fopen("files/corpus.csv", "r");
   if (arquivoTweets == NULL) {
     printf("Erro ao abrir arquivo de tweets.");
     exit(1);

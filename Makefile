@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 TARGET = programa
 
-SRCS = main.c hash/lista.c hash/arvoreRb.c hash/hash.c set/set.c set/arvoreAvl.c utilitarios.c
+SRCS = main.c utilitarios.c estruturas/arvoreAvl.c estruturas/arvoreRb.c estruturas/hash.c estruturas/set.c
 
 all: $(TARGET)
 

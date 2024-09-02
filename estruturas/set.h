@@ -1,4 +1,4 @@
-#include "../hash/lista.h"
+#include "arvoreAvl.h"
 
 typedef struct set Set;
 

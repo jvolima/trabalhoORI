@@ -12,7 +12,7 @@ struct set {
 Set* criaSet() {
   Set* s = (Set*) malloc(sizeof(Set));
   if (s != NULL) {
-    s->arv = cria_ArvAVL();
+    s->arv = criaArvAVL();
     s->quantidade = 0;
     s->iter = NULL;
   }
@@ -22,7 +22,7 @@ Set* criaSet() {
 
 void liberaSet(Set* s) {
   if (s != NULL){
-    libera_ArvAVL(s->arv);
+    liberaArvAVL(s->arv);
 
     struct iterator* no;
     while(s->iter != NULL) {
@@ -40,7 +40,7 @@ int insereSet(Set* s, Postagem postagem) {
     return 0;
   }
 
-  if (insere_ArvAVL(s->arv, postagem)) {
+  if (insereArvAVL(s->arv, postagem)) {
     s->quantidade++;
     return 1;
   }
@@ -61,7 +61,7 @@ int consultaSet(Set* s, Postagem postagem) {
     return 0;
   }
 
-  return consulta_ArvAVL(s->arv, postagem);
+  return consultaArvAVL(s->arv, postagem);
 }
 
 void beginSet(Set *s){
@@ -70,7 +70,7 @@ void beginSet(Set *s){
   }
 
   s->iter = NULL;
-  iterator_ArvAVL(s->arv, &(s->iter));
+  iteratorArvAVL(s->arv, &(s->iter));
 }
 
 int endSet(Set *s){

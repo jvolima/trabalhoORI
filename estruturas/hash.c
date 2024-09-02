@@ -23,7 +23,7 @@ Hash* criaHash(int tamanho) {
     }
 
     for (i = 0; i < hash->tamanho; i++) {
-      hash->palavras[i] = cria_arv_rb();
+      hash->palavras[i] = criaArvRB();
     }  
   }
 
@@ -37,7 +37,7 @@ void liberaHash(Hash *hash) {
 
   for (int i = 0; i < hash->tamanho; i++) {
     ArvRB *atual = hash->palavras[i];
-    libera_red_black(atual);
+    liberaArvRB(atual);
   }
 
   free(hash->palavras);
@@ -55,8 +55,8 @@ int valorString(char *str) {
   return (valor & 0x7FFFFFFF);
 }
 
-int chaveDivisao(int chave, int TABLE_SIZE) {
-  return (chave & 0x7FFFFFFF) % TABLE_SIZE;
+int chaveDivisao(int chave, int tamanhoHash) {
+  return (chave & 0x7FFFFFFF) % tamanhoHash;
 }
 
 int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
@@ -74,31 +74,39 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
   }
   strcpy(palavra.valor, novaPalavra);
 
-  if (adicionar_postagem(hash->palavras[pos], palavra, novaPostagem)) {
+  if (adicionarPostagem(hash->palavras[pos], palavra, novaPostagem)) {
     return 1;
   }
 
-  palavra.listaPostagens = criaLista();
-  if (palavra.listaPostagens == NULL) {
+  palavra.postagens = criaSet();
+  if (palavra.postagens == NULL) {
     return 0;
   }
 
-  if (!insereLista(palavra.listaPostagens, novaPostagem)) {
+  if (!insereSet(palavra.postagens, novaPostagem)) {
     return 0;
   }
 
-  red_black_insert(hash->palavras[pos], palavra);
+  insereArvRB(hash->palavras[pos], palavra);
 
   return 1;
 }
 
-int buscaPalavra(Hash *hash, char *str, Palavra *palavra) {
+Set* buscaPalavra(Hash *hash, char *str, int *deuCerto) {
+  *deuCerto = 0;
+
   if (hash == NULL || hash->palavras == NULL) {
-    return 0;
+    return NULL;
   }
         
   int chave = valorString(str);
   int pos = chaveDivisao(chave, hash->tamanho);
+  Palavra palavra;
 
-  return busca_chave(hash->palavras[pos], str, palavra);
+  if (!buscaChave(hash->palavras[pos], str, &palavra)) {
+    return NULL;
+  }
+
+  *deuCerto = 1;
+  return palavra.postagens;
 }

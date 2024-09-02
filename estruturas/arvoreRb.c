@@ -9,13 +9,13 @@
 #define RED '1'
 
 // Função para criar árvore rubro-negra
-ArvRB *cria_arv_rb() {
+ArvRB *criaArvRB() {
   // Aloca memória para a raiz da árvore e retorna um ponteiro para ela
   return (ArvRB *) malloc(sizeof(ArvRB));
 }
 
 // Função para verificar se existe um nó na árvore com o valor informado
-int busca_chave(ArvRB *raiz, char *valor, Palavra *palavra) {
+int buscaChave(ArvRB *raiz, char *valor, Palavra *palavra) {
   if (raiz == NULL) {
     return 0; // Se a árvore estiver vazia, retorna 0 (não encontrado)
   }
@@ -27,7 +27,7 @@ int busca_chave(ArvRB *raiz, char *valor, Palavra *palavra) {
       return 1; // Valor encontrado, retorna 1
     }
 
-    if (valor > atual->info.valor) {
+    if (strcmp(valor, atual->info.valor) > 0) {
       atual = atual->dir; // Continua a busca no subárvore direita
     } else {
       atual = atual->esq; // Continua a busca no subárvore esquerda
@@ -37,7 +37,7 @@ int busca_chave(ArvRB *raiz, char *valor, Palavra *palavra) {
   return 0; // Valor não encontrado, retorna 0
 }
 
-int adicionar_postagem(ArvRB *raiz, Palavra valor, Postagem postagem) {
+int adicionarPostagem(ArvRB *raiz, Palavra valor, Postagem postagem) {
   if (raiz == NULL) {
     return 0;
   }
@@ -45,11 +45,11 @@ int adicionar_postagem(ArvRB *raiz, Palavra valor, Postagem postagem) {
   No *atual = *raiz; // Começa a busca a partir da raiz
   while (atual != NULL) {
     if (strcmp(valor.valor, atual->info.valor) == 0) {
-      insereLista(atual->info.listaPostagens, postagem);
+      insereSet(atual->info.postagens, postagem);
       return 1; // Valor encontrado, retorna 1
     }
 
-    if (valor.valor > atual->info.valor) {
+    if (strcmp(valor.valor, atual->info.valor) > 0) {
       atual = atual->dir; // Continua a busca no subárvore direita
     } else {
       atual = atual->esq; // Continua a busca no subárvore esquerda
@@ -60,7 +60,7 @@ int adicionar_postagem(ArvRB *raiz, Palavra valor, Postagem postagem) {
 }
 
 // Função para rotacionar à esquerda
-No *left_rotate(ArvRB *raiz, No *novo) {
+No *rotacaoEsquerda(ArvRB *raiz, No *novo) {
   No *filhoDir = novo->dir; // Filho à direita se tornará o novo pai
   novo->dir = filhoDir->esq; // Atualiza a subárvore direita do nó original
 
@@ -84,7 +84,7 @@ No *left_rotate(ArvRB *raiz, No *novo) {
 }
 
 // Função para rotacionar à direita
-No *right_rotate(ArvRB *raiz, No *novo) {
+No *rotacaoDireita(ArvRB *raiz, No *novo) {
   No *filhoEsq = novo->esq; // Filho à esquerda se tornará o novo pai
   novo->esq = filhoEsq->dir; // Atualiza a subárvore esquerda do nó original
 
@@ -108,21 +108,21 @@ No *right_rotate(ArvRB *raiz, No *novo) {
 }
 
 // Função para rotacionar à esquerda e depois à direita
-No *left_right_rotate(ArvRB *raiz, No *novo) {
+No *rotacaoEsquerdaDireita(ArvRB *raiz, No *novo) {
   No *filhoEsq = novo->esq;
-  left_rotate(raiz, filhoEsq); // Primeiro, rotaciona à esquerda o filho à esquerda
-  return right_rotate(raiz, novo); // Depois, rotaciona à direita o nó original
+  rotacaoEsquerda(raiz, filhoEsq); // Primeiro, rotaciona à esquerda o filho à esquerda
+  return rotacaoDireita(raiz, novo); // Depois, rotaciona à direita o nó original
 }
 
 // Função para rotacionar à direita e depois à esquerda
-No *right_left_rotate(ArvRB *raiz, No *novo) {
+No *rotacaoDireitaEsquerda(ArvRB *raiz, No *novo) {
   No *filhoDir = novo->dir;
-  right_rotate(raiz, filhoDir); // Primeiro, rotaciona à direita o filho à direita
-  return left_rotate(raiz, novo); // Depois, rotaciona à esquerda o nó original
+  rotacaoDireita(raiz, filhoDir); // Primeiro, rotaciona à direita o filho à direita
+  return rotacaoEsquerda(raiz, novo); // Depois, rotaciona à esquerda o nó original
 }
 
 // Função para inserir valor na árvore rubro-negra
-void red_black_insert(ArvRB *raiz, Palavra info) {
+void insereArvRB(ArvRB *raiz, Palavra info) {
   if (raiz == NULL) {
     return;
   }
@@ -140,7 +140,7 @@ void red_black_insert(ArvRB *raiz, Palavra info) {
   // Percorre a árvore para encontrar a posição correta para o novo nó
   while (atual != NULL) {
     anterior = atual;
-    if (novo->info.valor > atual->info.valor) {
+    if (strcmp(novo->info.valor, atual->info.valor) > 0) {
       atual = atual->dir;
     } else {
       atual = atual->esq;
@@ -152,7 +152,7 @@ void red_black_insert(ArvRB *raiz, Palavra info) {
     novo->cor = BLACK; // Raiz sempre é preta
     *raiz = novo;
     novo->pai = NULL;
-  } else if (novo->info.valor > anterior->info.valor) {
+  } else if (strcmp(novo->info.valor, anterior->info.valor) > 0) {
     anterior->dir = novo;
     novo->pai = anterior;
   } else {
@@ -161,11 +161,11 @@ void red_black_insert(ArvRB *raiz, Palavra info) {
   }
 
   // Chama a função para consertar as propriedades da árvore rubro-negra
-  red_black_insert_fixup(raiz, novo);
+  insereArvRBFixup(raiz, novo);
 }
 
 // Função para consertar propriedades da árvore rubro-negra após inserção
-void red_black_insert_fixup(ArvRB *raiz, No *novo) {
+void insereArvRBFixup(ArvRB *raiz, No *novo) {
   // Enquanto o pai do nó é vermelho, continua ajustando
   while (novo->pai != NULL && novo->pai->cor == RED) {
     if (novo->pai->pai != NULL && novo->pai == novo->pai->pai->esq) {
@@ -181,13 +181,13 @@ void red_black_insert_fixup(ArvRB *raiz, No *novo) {
           // Nó é filho direito, precisa de rotação
           novo->pai->cor = BLACK;
           if (novo->pai->pai != NULL) {
-            novo = left_right_rotate(raiz, novo->pai->pai);
+            novo = rotacaoEsquerdaDireita(raiz, novo->pai->pai);
           }
         } else {
           // Nó é filho esquerdo, apenas rotaciona
           novo->cor = BLACK;
           if (novo->pai->pai != NULL) {
-            novo = right_rotate(raiz, novo->pai->pai);
+            novo = rotacaoDireita(raiz, novo->pai->pai);
           }
         }
       }
@@ -204,13 +204,13 @@ void red_black_insert_fixup(ArvRB *raiz, No *novo) {
           // Nó é filho esquerdo, precisa de rotação
           novo->pai->cor = BLACK;
           if (novo->pai->pai != NULL) {
-            novo = right_left_rotate(raiz, novo->pai->pai);
+            novo = rotacaoDireitaEsquerda(raiz, novo->pai->pai);
           }
         } else {
           // Nó é filho direito, apenas rotaciona
           novo->cor = BLACK;
           if (novo->pai->pai != NULL) {
-            novo = left_rotate(raiz, novo->pai->pai);
+            novo = rotacaoEsquerda(raiz, novo->pai->pai);
           }
         }
       }
@@ -219,24 +219,24 @@ void red_black_insert_fixup(ArvRB *raiz, No *novo) {
   (*raiz)->cor = BLACK; // Garante que a raiz é sempre preta
 }
 
-void libera_no(ArvRB no) {
+void liberaNoRB(ArvRB no) {
   if (no == NULL) {
     return;
   }
 
-  libera_no(no->esq);
-  libera_no(no->dir);
-  liberaLista(no->info.listaPostagens);
+  liberaNoRB(no->esq);
+  liberaNoRB(no->dir);
+  liberaSet(no->info.postagens);
   free(no->info.valor);
   free(no);
   no = NULL;
 }
 
-void libera_red_black(ArvRB *raiz) {
+void liberaArvRB(ArvRB *raiz) {
   if (raiz == NULL) {
     return;
   }
 
-  libera_no(*raiz);
+  liberaNoRB(*raiz);
   free(raiz);
 }

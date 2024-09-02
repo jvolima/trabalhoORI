@@ -9,7 +9,7 @@ struct No {
   struct No *dir;
 };
 
-ArvAVL* cria_ArvAVL() {
+ArvAVL* criaArvAVL() {
   ArvAVL* raiz = (ArvAVL*) malloc(sizeof(ArvAVL));
   if (raiz != NULL) {
     *raiz = NULL;
@@ -18,27 +18,27 @@ ArvAVL* cria_ArvAVL() {
   return raiz;
 }
 
-void libera_No(struct No* no) {
+void liberaNoAVL(struct No* no) {
   if (no == NULL) {
     return;
   }
 
-  libera_No(no->esq);
-  libera_No(no->dir);
+  liberaNoAVL(no->esq);
+  liberaNoAVL(no->dir);
   free(no);
   no = NULL;
 }
 
-void libera_ArvAVL(ArvAVL* raiz) {
+void liberaArvAVL(ArvAVL* raiz) {
   if (raiz == NULL) {
     return;
   }
 
-  libera_No(*raiz);
+  liberaNoAVL(*raiz);
   free(raiz);
 }
 
-int altura_No(struct No* no) {
+int alturaNo(struct No* no) {
   if (no == NULL) {
     return -1;
   }
@@ -46,8 +46,8 @@ int altura_No(struct No* no) {
   return no->altura;
 }
 
-int fatorBalanceamento_No(struct No* no) {
-  return labs(altura_No(no->esq) - altura_No(no->dir));
+int fatorBalanceamentoNo(struct No* no) {
+  return labs(alturaNo(no->esq) - alturaNo(no->dir));
 }
 
 int maior(int x, int y) {
@@ -58,7 +58,7 @@ int maior(int x, int y) {
   return y;
 }
 
-int consulta_ArvAVL(ArvAVL *raiz, Postagem valor) {
+int consultaArvAVL(ArvAVL *raiz, Postagem valor) {
   if (raiz == NULL) {
     return 0;
   }
@@ -79,41 +79,41 @@ int consulta_ArvAVL(ArvAVL *raiz, Postagem valor) {
   return 0;
 }
 
-void RotacaoLL(ArvAVL *A) {
+void rotacaoLL(ArvAVL *A) {
   struct No *B;
   B = (*A)->esq;
   (*A)->esq = B->dir;
   B->dir = *A;
-  (*A)->altura = maior(altura_No((*A)->esq),altura_No((*A)->dir)) + 1;
-  B->altura = maior(altura_No(B->esq),(*A)->altura) + 1;
+  (*A)->altura = maior(alturaNo((*A)->esq), alturaNo((*A)->dir)) + 1;
+  B->altura = maior(alturaNo(B->esq), (*A)->altura) + 1;
   *A = B;
 }
 
-void RotacaoRR(ArvAVL *A) {
+void rotacaoRR(ArvAVL *A) {
   struct No *B;
   B = (*A)->dir;
   (*A)->dir = B->esq;
   B->esq = (*A);
-  (*A)->altura = maior(altura_No((*A)->esq),altura_No((*A)->dir)) + 1;
-  B->altura = maior(altura_No(B->dir),(*A)->altura) + 1;
+  (*A)->altura = maior(alturaNo((*A)->esq),alturaNo((*A)->dir)) + 1;
+  B->altura = maior(alturaNo(B->dir),(*A)->altura) + 1;
   (*A) = B;
 }
 
-void RotacaoLR(ArvAVL *A) {
-  RotacaoRR(&(*A)->esq);
-  RotacaoLL(A);
+void rotacaoLR(ArvAVL *A) {
+  rotacaoRR(&(*A)->esq);
+  rotacaoLL(A);
 }
 
-void RotacaoRL(ArvAVL *A) {
-  RotacaoLL(&(*A)->dir);
-  RotacaoRR(A);
+void rotacaoRL(ArvAVL *A) {
+  rotacaoLL(&(*A)->dir);
+  rotacaoRR(A);
 }
 
-int insere_ArvAVL(ArvAVL *raiz, Postagem valor){
+int insereArvAVL(ArvAVL *raiz, Postagem valor){
   int res;
   if (*raiz == NULL) {
     struct No *novo;
-    novo = (struct No*)malloc(sizeof(struct No));
+    novo = (struct No*) malloc(sizeof(struct No));
     if(novo == NULL) {
       return 0;
     }
@@ -129,23 +129,23 @@ int insere_ArvAVL(ArvAVL *raiz, Postagem valor){
 
   struct No *atual = *raiz;
   if (valor.rrn < atual->info.rrn) {
-    if ((res = insere_ArvAVL(&(atual->esq), valor)) == 1) {
-      if (fatorBalanceamento_No(atual) >= 2) {
+    if ((res = insereArvAVL(&(atual->esq), valor)) == 1) {
+      if (fatorBalanceamentoNo(atual) >= 2) {
         if (valor.rrn < (*raiz)->esq->info.rrn) {
-          RotacaoLL(raiz);
+          rotacaoLL(raiz);
         } else {
-          RotacaoLR(raiz);
+          rotacaoLR(raiz);
         }
       }
     }
   } else {
     if(valor.rrn > atual->info.rrn) {
-      if ((res = insere_ArvAVL(&(atual->dir), valor)) == 1) {
-        if (fatorBalanceamento_No(atual) >= 2) {
+      if ((res = insereArvAVL(&(atual->dir), valor)) == 1) {
+        if (fatorBalanceamentoNo(atual) >= 2) {
           if ((*raiz)->dir->info.rrn < valor.rrn) {
-            RotacaoRR(raiz);
+            rotacaoRR(raiz);
           } else {
-            RotacaoRL(raiz);
+            rotacaoRL(raiz);
           }
         }
       }
@@ -154,7 +154,7 @@ int insere_ArvAVL(ArvAVL *raiz, Postagem valor){
     }
   }
 
-  atual->altura = maior(altura_No(atual->esq),altura_No(atual->dir)) + 1;
+  atual->altura = maior(alturaNo(atual->esq), alturaNo(atual->dir)) + 1;
 
   return res;
 }
@@ -170,13 +170,13 @@ struct No* procuraMenor(struct No* atual) {
   return no1;
 }
 
-void iterator_ArvAVL(ArvAVL *raiz, struct iterator **iter){
+void iteratorArvAVL(ArvAVL *raiz, struct iterator **iter){
   if (raiz == NULL) {
     return;
   }
 
   if (*raiz != NULL) {
-    iterator_ArvAVL(&((*raiz)->esq),iter);
+    iteratorArvAVL(&((*raiz)->esq),iter);
 
     struct iterator* no;
     no = (struct iterator*) malloc(sizeof(struct iterator));
@@ -184,6 +184,6 @@ void iterator_ArvAVL(ArvAVL *raiz, struct iterator **iter){
     no->prox = *iter;
     *iter = no;
 
-    iterator_ArvAVL(&((*raiz)->dir),iter);
+    iteratorArvAVL(&((*raiz)->dir),iter);
   }
 }

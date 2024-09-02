@@ -199,20 +199,16 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
         }
         operadorNot = 0;
     } else {
-      Palavra palavra;
-      if (buscaPalavra(hash, postfix[i], &palavra)) {
-        Set* conjunto = criaSet();
-        Postagem* postagens = retornaLista(palavra.listaPostagens);
-        for (int i = 0; i < quantidadeLista(palavra.listaPostagens); i++) {
-          insereSet(conjunto, postagens[i]);
-        }
+      int deuCerto;
+      Set* conjunto = buscaPalavra(hash, postfix[i], &deuCerto);
+      if (deuCerto) {
         pilha[++topo] = conjunto;
       }
     } 
   }
 
   if (topo != 0) { 
-    printf("Busca inválida.\n");
+    printf("Nenhuma postagem foi encontrada.\n");
     return NULL;
   }
 
