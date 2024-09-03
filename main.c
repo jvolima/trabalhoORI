@@ -9,7 +9,7 @@
 #define MAX_BUSCA 300
 
 int main() {
-  Hash *hash = criaHash(1009);
+  Hash *hash = criaHash(10007);
  
   FILE *arquivoTweets = fopen("files/corpus.csv", "r");
   if (arquivoTweets == NULL) {

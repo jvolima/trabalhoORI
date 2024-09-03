@@ -37,7 +37,7 @@ void limparString(char* valor) {
 }
 
 char** separarBuscaEmComponentes(char* busca, int* numComponentes) {
-  char** componentes = malloc(MAX_COMPONENTES * sizeof(char*));
+  char** componentes = (char**) malloc(MAX_COMPONENTES * sizeof(char*));
   if (componentes == NULL) {
     return NULL;
   }
@@ -94,7 +94,7 @@ int precedencia(char* operacao) {
 }
 
 char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tamanhoPostfix) {
-  char** resultado = (char**) malloc (MAX_PILHA * sizeof(char*));
+  char** resultado = (char**) malloc(MAX_PILHA * sizeof(char*));
   if (resultado == NULL) {
     return NULL;
   }
@@ -207,7 +207,7 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
     } 
   }
 
-  if (topo != 0) { 
+  if (topo != 0 || tamanhoSet(pilha[topo]) == 0) { 
     printf("Nenhuma postagem foi encontrada.\n");
     return NULL;
   }
