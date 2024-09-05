@@ -1,7 +1,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include "utilitarios.h"
 
 #define MAX_COMPONENTES 100
@@ -146,7 +145,7 @@ char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tam
   return resultado;
 }
 
-Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
+Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade, int *tipoErro) {
   Set* pilha[MAX_PILHA];
   int topo = -1;
   int operadorNot = 0;
@@ -154,65 +153,65 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
 
   for (int i = 0; i < quantidade; i++) {
     if (strcmp(postfix[i], "NOT") == 0) {
-      if (elementoNegado != -1) {
-        printf("Busca inválida.\n");
+      if (quantidade == 2 || elementoNegado != -1) {
+        *tipoErro = 2;
         return NULL;
       }
+
       operadorNot = 1;
       elementoNegado = topo;
     } else if (strcmp(postfix[i], "AND") == 0) {
       if (topo < 1) {
-        printf("Busca inválida.\n");
+        *tipoErro = 1;
         return NULL;
       }
     
       Set* set1 = pilha[topo];
       topo--; 
       Set* set2 = pilha[topo];
-      topo--;
 
       if (operadorNot) {
         if (elementoNegado == 0) {
-          pilha[++topo] = interseccaoSetComNot(set1, set2);
+          pilha[topo] = interseccaoSetComNot(set1, set2);
         } else {
-          pilha[++topo] = interseccaoSetComNot(set2, set1);
+          pilha[topo] = interseccaoSetComNot(set2, set1);
         }
       } else {
-        pilha[++topo] = interseccaoSet(set1, set2);
+        pilha[topo] = interseccaoSet(set1, set2);
       }
       operadorNot = 0;
       elementoNegado = -1;
     } else if (strcmp(postfix[i], "OR") == 0) {
         if (topo < 1) { 
-          printf("Busca inválida.\n");
+          *tipoErro = 1;
+          return NULL;
+        }
+
+        if (operadorNot) {
+          *tipoErro = 2;
           return NULL;
         }
  
         Set* set1 = pilha[topo];
         topo--;
         Set* set2 = pilha[topo];
-        topo--;
 
-        if (operadorNot) {
-          printf("Busca inválida.\n");
-          return NULL;
-        } else { 
-          pilha[++topo] = uniaoSet(set1, set2);
-        }
+        pilha[topo] = uniaoSet(set1, set2);
         operadorNot = 0;
     } else {
       int deuCerto;
       Set* conjunto = buscaPalavra(hash, postfix[i], &deuCerto);
+      topo++;
       if (deuCerto) {
-        pilha[++topo] = conjunto;
+        pilha[topo] = conjunto;
       } else {
-        pilha[++topo] = criaSet();
+        pilha[topo] = criaSet();
       }
     } 
   }
 
   if (topo != 0 || tamanhoSet(pilha[topo]) == 0) { 
-    printf("Nenhuma postagem foi encontrada.\n");
+    *tipoErro = 3;
     return NULL;
   }
 
