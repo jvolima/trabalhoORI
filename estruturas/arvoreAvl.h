@@ -9,10 +9,10 @@ struct iterator {
   struct iterator *prox;
 };
 
-typedef struct No* ArvAVL;
+typedef struct No *ArvAVL;
 
 ArvAVL* criaArvAVL();
-void liberaArvAVL(ArvAVL*);
 int insereArvAVL(ArvAVL*, Postagem);
 int consultaArvAVL(ArvAVL*, Postagem);
 void iteratorArvAVL(ArvAVL*, struct iterator**);
+void liberaArvAVL(ArvAVL*);

@@ -56,6 +56,11 @@ int main() {
     int numComponentes;
     char **componentes = separarBuscaEmComponentes(busca, &numComponentes);
 
+    if (componentes == NULL || numComponentes == 0) {
+      printf("Pesquisa inválida.");
+      continue;
+    }
+
     int tamanhoPostfix;
     char **postfix = converterComponentesParaPostfix(componentes, numComponentes, &tamanhoPostfix);
 
@@ -74,6 +79,7 @@ int main() {
     for (int i = 0; i < numComponentes; i++) {
       free(componentes[i]);
     }
+
     free(componentes);
     free(postfix);
 

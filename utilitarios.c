@@ -37,6 +37,8 @@ void limparString(char* valor) {
 }
 
 char** separarBuscaEmComponentes(char* busca, int* numComponentes) {
+  *numComponentes = 0;
+
   char** componentes = (char**) malloc(MAX_COMPONENTES * sizeof(char*));
   if (componentes == NULL) {
     return NULL;
@@ -203,6 +205,8 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade) {
       Set* conjunto = buscaPalavra(hash, postfix[i], &deuCerto);
       if (deuCerto) {
         pilha[++topo] = conjunto;
+      } else {
+        pilha[++topo] = criaSet();
       }
     } 
   }

@@ -1,40 +1,45 @@
-// Bibliotecas
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "arvoreRb.h"
 
-// Macros
 #define BLACK '0'
 #define RED '1'
 
+struct No {
+  Palavra info;
+  struct No *esq;
+  struct No *dir;
+  struct No *pai;
+  char cor;
+};
+
 // Função para criar árvore rubro-negra
 ArvRB *criaArvRB() {
-  // Aloca memória para a raiz da árvore e retorna um ponteiro para ela
   return (ArvRB *) malloc(sizeof(ArvRB));
 }
 
 // Função para verificar se existe um nó na árvore com o valor informado
 int buscaChave(ArvRB *raiz, char *valor, Palavra *palavra) {
   if (raiz == NULL) {
-    return 0; // Se a árvore estiver vazia, retorna 0 (não encontrado)
+    return 0; 
   }
 
-  No *atual = *raiz; // Começa a busca a partir da raiz
+  struct No *atual = *raiz;
   while (atual != NULL) {
     if (strcmp(valor, atual->info.valor) == 0) {
       *palavra = atual->info;
-      return 1; // Valor encontrado, retorna 1
+      return 1; 
     }
 
     if (strcmp(valor, atual->info.valor) > 0) {
-      atual = atual->dir; // Continua a busca no subárvore direita
+      atual = atual->dir; 
     } else {
-      atual = atual->esq; // Continua a busca no subárvore esquerda
+      atual = atual->esq;
     }
   }
 
-  return 0; // Valor não encontrado, retorna 0
+  return 0; 
 }
 
 int adicionarPostagem(ArvRB *raiz, Palavra valor, Postagem postagem) {
@@ -42,83 +47,83 @@ int adicionarPostagem(ArvRB *raiz, Palavra valor, Postagem postagem) {
     return 0;
   }
 
-  No *atual = *raiz; // Começa a busca a partir da raiz
+  struct No *atual = *raiz; 
   while (atual != NULL) {
     if (strcmp(valor.valor, atual->info.valor) == 0) {
       insereSet(atual->info.postagens, postagem);
-      return 1; // Valor encontrado, retorna 1
+      return 1; 
     }
 
     if (strcmp(valor.valor, atual->info.valor) > 0) {
-      atual = atual->dir; // Continua a busca no subárvore direita
+      atual = atual->dir; 
     } else {
-      atual = atual->esq; // Continua a busca no subárvore esquerda
+      atual = atual->esq;
     }
   }
 
-  return 0; // Valor não encontrado, retorna 0
+  return 0; 
 }
 
 // Função para rotacionar à esquerda
-No *rotacaoEsquerda(ArvRB *raiz, No *novo) {
-  No *filhoDir = novo->dir; // Filho à direita se tornará o novo pai
-  novo->dir = filhoDir->esq; // Atualiza a subárvore direita do nó original
+struct No *rotacaoEsquerda(ArvRB *raiz, struct No *novo) {
+  struct No *filhoDir = novo->dir; 
+  novo->dir = filhoDir->esq; 
 
   if (filhoDir->esq != NULL) {
-    filhoDir->esq->pai = novo; // Atualiza o pai do filho à esquerda
+    filhoDir->esq->pai = novo;
   }
 
-  filhoDir->pai = novo->pai; // Atualiza o pai do filho à direita
+  filhoDir->pai = novo->pai;
   if (novo->pai == NULL) {
-    *raiz = filhoDir; // Se o nó original era a raiz, atualiza a raiz
+    *raiz = filhoDir;
   } else if (novo == novo->pai->esq) {
-    novo->pai->esq = filhoDir; // Atualiza a subárvore esquerda do pai do nó original
+    novo->pai->esq = filhoDir;
   } else {
-    novo->pai->dir = filhoDir; // Atualiza a subárvore direita do pai do nó original
+    novo->pai->dir = filhoDir; 
   }
 
-  filhoDir->esq = novo; // Coloca o nó original à esquerda do filho à direita
-  novo->pai = filhoDir; // Atualiza o pai do nó original
+  filhoDir->esq = novo;
+  novo->pai = filhoDir;
 
-  return novo->pai; // Retorna o novo pai
+  return novo->pai;
 }
 
 // Função para rotacionar à direita
-No *rotacaoDireita(ArvRB *raiz, No *novo) {
-  No *filhoEsq = novo->esq; // Filho à esquerda se tornará o novo pai
-  novo->esq = filhoEsq->dir; // Atualiza a subárvore esquerda do nó original
+struct No *rotacaoDireita(ArvRB *raiz, struct No *novo) {
+  struct No *filhoEsq = novo->esq; 
+  novo->esq = filhoEsq->dir;
 
   if (filhoEsq->dir != NULL) {
-    filhoEsq->dir->pai = novo; // Atualiza o pai do filho à direita
+    filhoEsq->dir->pai = novo;
   }
 
-  filhoEsq->pai = novo->pai; // Atualiza o pai do filho à esquerda
+  filhoEsq->pai = novo->pai;
   if (novo->pai == NULL) {
-    *raiz = filhoEsq; // Se o nó original era a raiz, atualiza a raiz
+    *raiz = filhoEsq;
   } else if (novo == novo->pai->dir) {
-    novo->pai->dir = filhoEsq; // Atualiza a subárvore direita do pai do nó original
+    novo->pai->dir = filhoEsq;
   } else {
-    novo->pai->esq = filhoEsq; // Atualiza a subárvore esquerda do pai do nó original
+    novo->pai->esq = filhoEsq;
   }
 
-  filhoEsq->dir = novo; // Coloca o nó original à direita do filho à esquerda
-  novo->pai = filhoEsq; // Atualiza o pai do nó original
+  filhoEsq->dir = novo;
+  novo->pai = filhoEsq;
 
-  return novo->pai; // Retorna o novo pai
+  return novo->pai;
 }
 
 // Função para rotacionar à esquerda e depois à direita
-No *rotacaoEsquerdaDireita(ArvRB *raiz, No *novo) {
-  No *filhoEsq = novo->esq;
-  rotacaoEsquerda(raiz, filhoEsq); // Primeiro, rotaciona à esquerda o filho à esquerda
-  return rotacaoDireita(raiz, novo); // Depois, rotaciona à direita o nó original
+struct No *rotacaoEsquerdaDireita(ArvRB *raiz, struct No *novo) {
+  struct No *filhoEsq = novo->esq;
+  rotacaoEsquerda(raiz, filhoEsq);
+  return rotacaoDireita(raiz, novo);
 }
 
 // Função para rotacionar à direita e depois à esquerda
-No *rotacaoDireitaEsquerda(ArvRB *raiz, No *novo) {
-  No *filhoDir = novo->dir;
-  rotacaoDireita(raiz, filhoDir); // Primeiro, rotaciona à direita o filho à direita
-  return rotacaoEsquerda(raiz, novo); // Depois, rotaciona à esquerda o nó original
+struct No *rotacaoDireitaEsquerda(ArvRB *raiz, struct No *novo) {
+  struct No *filhoDir = novo->dir;
+  rotacaoDireita(raiz, filhoDir);
+  return rotacaoEsquerda(raiz, novo);
 }
 
 // Função para inserir valor na árvore rubro-negra
@@ -127,17 +132,15 @@ void insereArvRB(ArvRB *raiz, Palavra info) {
     return;
   }
 
-  // Cria um novo nó e inicializa seus valores
-  No *novo = (No *) malloc(sizeof(No));
+  struct No *novo = (struct No*) malloc(sizeof(struct No));
   novo->info = info;
-  novo->cor = RED; // Novo nó sempre é inserido como vermelho
+  novo->cor = RED; 
   novo->esq = NULL;
   novo->dir = NULL;
 
-  No *atual = *raiz;
-  No *anterior = NULL;
+  struct No *atual = *raiz;
+  struct No *anterior = NULL;
 
-  // Percorre a árvore para encontrar a posição correta para o novo nó
   while (atual != NULL) {
     anterior = atual;
     if (strcmp(novo->info.valor, atual->info.valor) > 0) {
@@ -147,9 +150,8 @@ void insereArvRB(ArvRB *raiz, Palavra info) {
     }
   }
 
-  // Insere o novo nó na posição encontrada
   if (anterior == NULL) {
-    novo->cor = BLACK; // Raiz sempre é preta
+    novo->cor = BLACK;
     *raiz = novo;
     novo->pai = NULL;
   } else if (strcmp(novo->info.valor, anterior->info.valor) > 0) {
@@ -160,31 +162,26 @@ void insereArvRB(ArvRB *raiz, Palavra info) {
     novo->pai = anterior;
   }
 
-  // Chama a função para consertar as propriedades da árvore rubro-negra
   insereArvRBFixup(raiz, novo);
 }
 
 // Função para consertar propriedades da árvore rubro-negra após inserção
-void insereArvRBFixup(ArvRB *raiz, No *novo) {
-  // Enquanto o pai do nó é vermelho, continua ajustando
+void insereArvRBFixup(ArvRB *raiz, struct No *novo) {
   while (novo->pai != NULL && novo->pai->cor == RED) {
     if (novo->pai->pai != NULL && novo->pai == novo->pai->pai->esq) {
-      No *tio = novo->pai->pai->dir; // Tio do nó
+      struct No *tio = novo->pai->pai->dir; 
       if (tio != NULL && tio->cor == RED) {
-        // Tio vermelho, apenas recolore
         novo->pai->cor = BLACK;
         tio->cor = BLACK;
         novo->pai->pai->cor = RED;
         novo = novo->pai->pai;
       } else {
         if (novo == novo->pai->dir) {
-          // Nó é filho direito, precisa de rotação
           novo->pai->cor = BLACK;
           if (novo->pai->pai != NULL) {
             novo = rotacaoEsquerdaDireita(raiz, novo->pai->pai);
           }
         } else {
-          // Nó é filho esquerdo, apenas rotaciona
           novo->cor = BLACK;
           if (novo->pai->pai != NULL) {
             novo = rotacaoDireita(raiz, novo->pai->pai);
@@ -192,22 +189,19 @@ void insereArvRBFixup(ArvRB *raiz, No *novo) {
         }
       }
     } else {
-      No *tio = novo->pai->pai->esq; // Tio do nó
+      struct No *tio = novo->pai->pai->esq;
       if (tio != NULL && tio->cor == RED) {
-        // Tio vermelho, apenas recolore
         novo->pai->cor = BLACK;
         tio->cor = BLACK;
         novo->pai->pai->cor = RED;
         novo = novo->pai->pai;
       } else {
         if (novo == novo->pai->esq) {
-          // Nó é filho esquerdo, precisa de rotação
           novo->pai->cor = BLACK;
           if (novo->pai->pai != NULL) {
             novo = rotacaoDireitaEsquerda(raiz, novo->pai->pai);
           }
         } else {
-          // Nó é filho direito, apenas rotaciona
           novo->cor = BLACK;
           if (novo->pai->pai != NULL) {
             novo = rotacaoEsquerda(raiz, novo->pai->pai);
@@ -216,9 +210,10 @@ void insereArvRBFixup(ArvRB *raiz, No *novo) {
       }
     }
   }
-  (*raiz)->cor = BLACK; // Garante que a raiz é sempre preta
+  (*raiz)->cor = BLACK; 
 }
 
+// Função para liberar nó da árvore rubro-negra
 void liberaNoRB(ArvRB no) {
   if (no == NULL) {
     return;
@@ -232,6 +227,7 @@ void liberaNoRB(ArvRB no) {
   no = NULL;
 }
 
+// Função para liberar árvore rubro-negra
 void liberaArvRB(ArvRB *raiz) {
   if (raiz == NULL) {
     return;
