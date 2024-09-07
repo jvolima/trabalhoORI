@@ -47,6 +47,7 @@ int buscaChave(ArvRB *raiz, char *valor, Palavra *palavra) {
   return 0; 
 }
 
+// Função para adicionar uma postagem ao nó com o valor informado
 int adicionarPostagem(ArvRB *raiz, Palavra valor, Postagem postagem) {
   if (raiz == NULL) {
     return 0;

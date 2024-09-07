@@ -96,20 +96,29 @@ int precedencia(char* operacao) {
   return 0;
 }
 
-char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tamanhoPostfix) {
+char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tamanhoPostfix, int *tipoErro) {
+  *tipoErro = 0;
+
   char** resultado = (char**) malloc(MAX_PILHA * sizeof(char*));
   if (resultado == NULL) {
+    *tipoErro = 1;
     return NULL;
   }
 
   char* pilha[MAX_PILHA];
   int topo = -1;
   int indice = 0;
+  int ultimaPalavra = 0;
 
   for (int i = 0; i < tamanho; i++) {
     char* componente = componentes[i];
 
     if (strcmp(componente, "NOT") != 0 && strcmp(componente, "AND") != 0 && strcmp(componente, "OR") != 0 && strcmp(componente, "(") != 0 && strcmp(componente, ")") != 0) {
+      if (ultimaPalavra) {
+        *tipoErro = 2;
+        return NULL;
+      }
+      ultimaPalavra = 1;
       for (int i = 0; componente[i] != '\0'; i++) {
         componente[i] = tolower(componente[i]);
       }
@@ -126,6 +135,7 @@ char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tam
       }
       topo--; 
     } else {
+      ultimaPalavra = 0;
       while (topo != -1 && precedencia(pilha[topo]) >= precedencia(componente)) {
         resultado[indice] = pilha[topo];
         indice++;
@@ -152,6 +162,7 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade, int *tipoErro) {
   int topo = -1;
   int operadorNot = 0;
   int elementoNegado = -1;
+  *tipoErro = 0;
 
   for (int i = 0; i < quantidade; i++) {
     if (strcmp(postfix[i], "NOT") == 0) {
@@ -202,7 +213,7 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade, int *tipoErro) {
         operadorNot = 0;
     } else {
       int deuCerto;
-      Set* conjunto = buscaPalavra(hash, postfix[i], &deuCerto);
+      Set* conjunto = buscaPostagens(hash, postfix[i], &deuCerto);
       topo++;
       if (deuCerto) {
         pilha[topo] = conjunto;

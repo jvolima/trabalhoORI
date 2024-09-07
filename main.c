@@ -35,18 +35,21 @@ int main() {
     }
   }
 
-  int escolha;
+  char escolha;
   char busca[MAX_BUSCA];
   while (1) {
     printf("(1) Buscar nova palavra\n(2) Sair da busca\nOpção: ");
-    scanf("%d", &escolha);
-
-    if (!(escolha == 1 || escolha == 2)) {
+    if (scanf(" %c", &escolha) != 1) {
       printf("(ERRO) Opção inválida!\n\n");
       continue;
     }
 
-    if (escolha == 2) {
+    if (!(escolha == '1' || escolha == '2')) {
+      printf("(ERRO) Opção inválida!\n\n");
+      continue;
+    }
+
+    if (escolha == '2') {
       break;
     }
 
@@ -61,15 +64,25 @@ int main() {
       continue;
     }
 
-    int tamanhoPostfix;
-    char **postfix = converterComponentesParaPostfix(componentes, numComponentes, &tamanhoPostfix);
+    int tamanhoPostfix, tipoErro;
+    char **postfix = converterComponentesParaPostfix(componentes, numComponentes, &tamanhoPostfix, &tipoErro);
     
     if (postfix == NULL) {
-      printf("(ERRO) Tente novamente.\n\n");
+      switch (tipoErro) {
+        case 1:
+          printf("(ERRO) Tente novamente.\n\n");
+          break;
+        case 2:
+          printf("(ERRO) Busca inválida.\n\n");
+          break;
+
+        default:
+          printf("(ERRO) Tente novamente.\n\n");
+          break;
+      }
       continue;
     }
 
-    int tipoErro;
     Set *resultado = avaliarPostfix(hash, postfix, tamanhoPostfix, &tipoErro);
 
     if (resultado == NULL) {

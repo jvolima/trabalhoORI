@@ -12,4 +12,4 @@ Hash* criaHash(int);
 void liberaHash(Hash*);
 int valorString(char*);
 int insereHash(Hash*, char*, Postagem);
-Set* buscaPalavra(Hash*, char*, int*);
+Set* buscaPostagens(Hash*, char*, int*);

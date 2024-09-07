@@ -9,6 +9,7 @@ struct No {
   struct No *dir;
 };
 
+// Função para criar a árvore AVL
 ArvAVL* criaArvAVL() {
   ArvAVL* raiz = (ArvAVL*) malloc(sizeof(ArvAVL));
   if (raiz != NULL) {
@@ -18,26 +19,7 @@ ArvAVL* criaArvAVL() {
   return raiz;
 }
 
-void liberaNoAVL(struct No* no) {
-  if (no == NULL) {
-    return;
-  }
-
-  liberaNoAVL(no->esq);
-  liberaNoAVL(no->dir);
-  free(no);
-  no = NULL;
-}
-
-void liberaArvAVL(ArvAVL* raiz) {
-  if (raiz == NULL) {
-    return;
-  }
-
-  liberaNoAVL(*raiz);
-  free(raiz);
-}
-
+// Função para retornar a altura do nó informado
 int alturaNo(struct No* no) {
   if (no == NULL) {
     return -1;
@@ -46,10 +28,12 @@ int alturaNo(struct No* no) {
   return no->altura;
 }
 
+// Função para retornar o fator de balanceamento do nó informado
 int fatorBalanceamentoNo(struct No* no) {
   return labs(alturaNo(no->esq) - alturaNo(no->dir));
 }
 
+// Função para calcular o maior valor entre dois inteiros 
 int maior(int x, int y) {
   if (x > y) {
     return x;
@@ -58,6 +42,7 @@ int maior(int x, int y) {
   return y;
 }
 
+// Função para verificar se existe um nó na árvore com o valor informado
 int consultaArvAVL(ArvAVL *raiz, Postagem valor) {
   if (raiz == NULL) {
     return 0;
@@ -79,6 +64,7 @@ int consultaArvAVL(ArvAVL *raiz, Postagem valor) {
   return 0;
 }
 
+// Função para rotacionar à direita
 void rotacaoLL(ArvAVL *A) {
   struct No *B;
   B = (*A)->esq;
@@ -89,6 +75,7 @@ void rotacaoLL(ArvAVL *A) {
   *A = B;
 }
 
+// Função para rotacionar à esquerda
 void rotacaoRR(ArvAVL *A) {
   struct No *B;
   B = (*A)->dir;
@@ -99,16 +86,19 @@ void rotacaoRR(ArvAVL *A) {
   (*A) = B;
 }
 
+// Função para rotacionar à esquerda e depois à direita
 void rotacaoLR(ArvAVL *A) {
   rotacaoRR(&(*A)->esq);
   rotacaoLL(A);
 }
 
+// Função para rotacionar à direita e depois à esquerda
 void rotacaoRL(ArvAVL *A) {
   rotacaoLL(&(*A)->dir);
   rotacaoRR(A);
 }
 
+// Função para inserir valor na árvore AVL
 int insereArvAVL(ArvAVL *raiz, Postagem valor){
   int res;
   if (*raiz == NULL) {
@@ -159,13 +149,14 @@ int insereArvAVL(ArvAVL *raiz, Postagem valor){
   return res;
 }
 
+// Função para percorrer a árvore AVL em ordem e armazenar os elementos no iterator
 void iteratorArvAVL(ArvAVL *raiz, struct iterator **iter){
   if (raiz == NULL) {
     return;
   }
 
   if (*raiz != NULL) {
-    iteratorArvAVL(&((*raiz)->esq),iter);
+    iteratorArvAVL(&((*raiz)->esq), iter);
 
     struct iterator* no;
     no = (struct iterator*) malloc(sizeof(struct iterator));
@@ -173,6 +164,28 @@ void iteratorArvAVL(ArvAVL *raiz, struct iterator **iter){
     no->prox = *iter;
     *iter = no;
 
-    iteratorArvAVL(&((*raiz)->dir),iter);
+    iteratorArvAVL(&((*raiz)->dir), iter);
   }
+}
+
+// Função para liberar nó da árvore AVL
+void liberaNoAVL(struct No* no) {
+  if (no == NULL) {
+    return;
+  }
+
+  liberaNoAVL(no->esq);
+  liberaNoAVL(no->dir);
+  free(no);
+  no = NULL;
+}
+
+// Função para liberar árvore AVL
+void liberaArvAVL(ArvAVL* raiz) {
+  if (raiz == NULL) {
+    return;
+  }
+
+  liberaNoAVL(*raiz);
+  free(raiz);
 }

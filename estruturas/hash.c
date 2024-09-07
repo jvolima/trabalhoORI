@@ -9,6 +9,7 @@ struct hash {
   ArvRB **palavras;
 };
 
+// Função para criar a tabela hash
 Hash* criaHash(int tamanho) {
   Hash* hash = (Hash*) malloc(sizeof(Hash));
 
@@ -38,6 +39,7 @@ Hash* criaHash(int tamanho) {
   return hash;
 }
 
+// Função para liberar a tabela hash
 void liberaHash(Hash *hash) {
   if (hash == NULL) {
     return;
@@ -51,6 +53,7 @@ void liberaHash(Hash *hash) {
   free(hash);
 }
 
+// Função para converter a string para um valor inteiro
 int valorString(char *str) {
   int i, valor = 7;
   int tam = strlen(str);
@@ -62,24 +65,26 @@ int valorString(char *str) {
   return (valor & 0x7FFFFFFF);
 }
 
+// Função para calcular a posição da chave na tabela hash utilizando o método da divisão
 int chaveDivisao(int chave, int tamanhoHash) {
   return (chave & 0x7FFFFFFF) % tamanhoHash;
 }
 
-int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
+// Função para inserir a chave na tabela hash
+int insereHash(Hash *hash, char *valor, Postagem novaPostagem) {
   if (hash == NULL || hash->palavras == NULL) {
     return 0;
   }
         
-  int chave = valorString(novaPalavra);
+  int chave = valorString(valor);
   int pos = chaveDivisao(chave, hash->tamanho);
 
   Palavra palavra;
-  palavra.valor = (char*) malloc(strlen(novaPalavra) + 1);
+  palavra.valor = (char*) malloc(strlen(valor) + 1);
   if (palavra.valor == NULL) {
     return 0;
   }
-  strcpy(palavra.valor, novaPalavra);
+  strcpy(palavra.valor, valor);
 
   if (adicionarPostagem(hash->palavras[pos], palavra, novaPostagem)) {
     return 1;
@@ -99,18 +104,19 @@ int insereHash(Hash *hash, char *novaPalavra, Postagem novaPostagem) {
   return 1;
 }
 
-Set* buscaPalavra(Hash *hash, char *str, int *deuCerto) {
+// Função para buscar postagens de uma palavra
+Set* buscaPostagens(Hash *hash, char *valor, int *deuCerto) {
   *deuCerto = 0;
 
   if (hash == NULL || hash->palavras == NULL) {
     return NULL;
   }
         
-  int chave = valorString(str);
+  int chave = valorString(valor);
   int pos = chaveDivisao(chave, hash->tamanho);
   Palavra palavra;
 
-  if (!buscaChave(hash->palavras[pos], str, &palavra)) {
+  if (!buscaChave(hash->palavras[pos], valor, &palavra)) {
     return NULL;
   }
 
