@@ -16,7 +16,12 @@ struct No {
 
 // Função para criar árvore rubro-negra
 ArvRB *criaArvRB() {
-  return (ArvRB *) malloc(sizeof(ArvRB));
+  ArvRB *raiz = (ArvRB*) malloc(sizeof(ArvRB));
+  if (raiz != NULL) {
+    *raiz = NULL;
+  }
+
+  return raiz;
 }
 
 // Função para verificar se existe um nó na árvore com o valor informado

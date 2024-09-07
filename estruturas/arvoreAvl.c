@@ -159,17 +159,6 @@ int insereArvAVL(ArvAVL *raiz, Postagem valor){
   return res;
 }
 
-struct No* procuraMenor(struct No* atual) {
-  struct No *no1 = atual;
-  struct No *no2 = atual->esq;
-  while (no2 != NULL) {
-    no1 = no2;
-    no2 = no2->esq;
-  }
-
-  return no1;
-}
-
 void iteratorArvAVL(ArvAVL *raiz, struct iterator **iter){
   if (raiz == NULL) {
     return;

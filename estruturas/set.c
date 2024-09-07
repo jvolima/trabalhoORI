@@ -10,7 +10,7 @@ struct set {
 };
 
 Set* criaSet() {
-  Set* s = (Set*) malloc(sizeof(Set));
+  Set* s = (Set*) malloc (sizeof(Set));
   if (s != NULL) {
     s->arv = criaArvAVL();
     s->quantidade = 0;

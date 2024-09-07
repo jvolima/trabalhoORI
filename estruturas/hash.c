@@ -24,6 +24,14 @@ Hash* criaHash(int tamanho) {
 
     for (i = 0; i < hash->tamanho; i++) {
       hash->palavras[i] = criaArvRB();
+      if (hash->palavras[i] == NULL) {
+        for (int j = 0; j < i; j++) {
+          liberaArvRB(hash->palavras[j]);
+        }
+        free(hash->palavras);
+        free(hash);
+        return NULL;
+      }
     }  
   }
 
@@ -36,8 +44,7 @@ void liberaHash(Hash *hash) {
   }
 
   for (int i = 0; i < hash->tamanho; i++) {
-    ArvRB *atual = hash->palavras[i];
-    liberaArvRB(atual);
+    liberaArvRB(hash->palavras[i]);
   }
 
   free(hash->palavras);
@@ -108,5 +115,6 @@ Set* buscaPalavra(Hash *hash, char *str, int *deuCerto) {
   }
 
   *deuCerto = 1;
+  
   return palavra.postagens;
 }

@@ -17,7 +17,7 @@ void limparString(char* valor) {
   char stringLimpa[tamanho + 1];
 
   for (int i = 0; i < tamanho; i++) {
-    if (isalpha(valor[i]) || isdigit(valor[i])) {
+    if (isalnum(valor[i])) {
       stringLimpa[quantidadeCaracteresValidos++] = tolower(valor[i]);
     } else if ((valor[i] == '-' || valor[i] == '\'') && palavraComposta(valor, i, tamanho)) {
       stringLimpa[quantidadeCaracteresValidos++] = valor[i];
@@ -35,7 +35,7 @@ void limparString(char* valor) {
   strcpy(valor, stringLimpa);
 }
 
-char** separarBuscaEmComponentes(char* busca, int* numComponentes) {
+char** separarBuscaEmComponentes(char *busca, int *numComponentes) {
   *numComponentes = 0;
 
   char** componentes = (char**) malloc(MAX_COMPONENTES * sizeof(char*));
@@ -44,37 +44,39 @@ char** separarBuscaEmComponentes(char* busca, int* numComponentes) {
   }
 
   char* componente;
-  int i = 0;
+  int indice = 0;
 
   while (*busca != '\0') {
+    if (*busca == '\0') {
+      break;
+    }
+    
     while (isspace(*busca)) {
       busca++;
     }
 
-    if (*busca == '\0') {
-      break;
-    }
-
-    if (*busca == '(' || *busca == ')' || !isalnum(*busca)) {
-      componentes[i] = malloc(2 * sizeof(char));  
-      componentes[i][0] = *busca;
-      componentes[i][1] = '\0';
-      i++;
+    if (*busca == '(' || *busca == ')') {
+      componentes[indice] = malloc(2 * sizeof(char));  
+      componentes[indice][0] = *busca;
+      componentes[indice][1] = '\0';
+      indice++;
       busca++;
     } else {
       componente = busca;
-      while (*busca != '\0' && isalnum(*busca)) {
+      while (*busca != '\0' && (isalnum(*busca) || *busca == '\'' || *busca == '-')) {
         busca++;
       }
+
       int tamanho = busca - componente;
-      componentes[i] = malloc((tamanho + 1) * sizeof(char));
-      strncpy(componentes[i], componente, tamanho);
-      componentes[i][tamanho] = '\0';
-      i++;
+      componentes[indice] = malloc((tamanho + 1) * sizeof(char));
+      strncpy(componentes[indice], componente, tamanho);
+      componentes[indice][tamanho] = '\0';
+      indice++;
     }
   }
 
-  *numComponentes = i;
+  *numComponentes = indice;
+
   return componentes;
 }
 

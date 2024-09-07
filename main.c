@@ -61,7 +61,7 @@ int main() {
       continue;
     }
 
-    int tamanhoPostfix, tipoErro;
+    int tamanhoPostfix;
     char **postfix = converterComponentesParaPostfix(componentes, numComponentes, &tamanhoPostfix);
     
     if (postfix == NULL) {
@@ -69,6 +69,7 @@ int main() {
       continue;
     }
 
+    int tipoErro;
     Set *resultado = avaliarPostfix(hash, postfix, tamanhoPostfix, &tipoErro);
 
     if (resultado == NULL) {
