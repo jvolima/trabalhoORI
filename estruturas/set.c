@@ -9,6 +9,7 @@ struct set {
   struct iterator *iter;
 };
 
+// Função para criar o set
 Set* criaSet() {
   Set* s = (Set*) malloc (sizeof(Set));
   if (s != NULL) {
@@ -20,6 +21,7 @@ Set* criaSet() {
   return s;
 }
 
+// Função para liberar o set
 void liberaSet(Set* s) {
   if (s != NULL){
     liberaArvAVL(s->arv);
@@ -35,6 +37,7 @@ void liberaSet(Set* s) {
   }
 }
 
+// Função para inserir uma postagem no set
 int insereSet(Set* s, Postagem postagem) {
   if (s == NULL) {
     return 0;
@@ -48,6 +51,7 @@ int insereSet(Set* s, Postagem postagem) {
   return 0;
 }
 
+// Função para retornar o tamanho do set
 int tamanhoSet(Set* s) {
   if (s == NULL) {
     return 0;
@@ -56,6 +60,7 @@ int tamanhoSet(Set* s) {
   return s->quantidade;
 }
 
+// Função para consultar o valor de uma postagem no set
 int consultaSet(Set* s, Postagem postagem) {
   if(s == NULL) {
     return 0;
@@ -64,6 +69,7 @@ int consultaSet(Set* s, Postagem postagem) {
   return consultaArvAVL(s->arv, postagem);
 }
 
+// Função para retonrar o início do set
 void beginSet(Set *s){
   if (s == NULL) {
     return;
@@ -73,6 +79,7 @@ void beginSet(Set *s){
   iteratorArvAVL(s->arv, &(s->iter));
 }
 
+// Função para retornar se chegou ao fim do set
 int endSet(Set *s){
   if (s == NULL) {
     return 1;
@@ -85,6 +92,7 @@ int endSet(Set *s){
   return 0;
 }
 
+// Função para ir ao próximo set
 void nextSet(Set *s) {
   if (s == NULL) {
     return;
@@ -97,6 +105,7 @@ void nextSet(Set *s) {
   }
 }
 
+// Função para pegar a postagem atual do set
 void getItemSet(Set *s, Postagem *postagem) {
   if (s == NULL) {
     return;
@@ -107,6 +116,7 @@ void getItemSet(Set *s, Postagem *postagem) {
   }
 }
 
+// Função para fazer a união de dois conjuntos
 Set* uniaoSet(Set* A, Set* B) {
   if (A == NULL || B == NULL) {
     return NULL;
@@ -128,6 +138,7 @@ Set* uniaoSet(Set* A, Set* B) {
   return C;
 }
 
+// Função para fazer a intersecção de dois conjuntos
 Set* interseccaoSet(Set* A, Set* B) {
   if (A == NULL || B == NULL) {
     return NULL;
@@ -155,6 +166,7 @@ Set* interseccaoSet(Set* A, Set* B) {
   return C;
 }
 
+// Função para fazer a intersecção de dois conjuntos com um deles negado
 Set* interseccaoSetComNot(Set* A, Set* B) {
   if (A == NULL || B == NULL) {
     return NULL;

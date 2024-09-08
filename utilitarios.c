@@ -6,10 +6,12 @@
 #define MAX_COMPONENTES 100
 #define MAX_PILHA 100
 
+// Função para validar se a palavra é composta
 int palavraComposta(char* valor, int i, int tamanho) {
   return (i > 0 && i < tamanho - 1 && isalpha(valor[i - 1]) && isalpha(valor[i + 1]));
 }
 
+// Função para limpar a string fornecida, retirar alguns caracteres especiais e espaços em branco antes e depois do final da string
 void limparString(char* valor) {
   int tamanho = strlen(valor);
   int quantidadeCaracteresValidos = 0;
@@ -35,6 +37,7 @@ void limparString(char* valor) {
   strcpy(valor, stringLimpa);
 }
 
+// Função para separar a busca em componentes
 char** separarBuscaEmComponentes(char *busca, int *numComponentes) {
   *numComponentes = 0;
 
@@ -80,6 +83,7 @@ char** separarBuscaEmComponentes(char *busca, int *numComponentes) {
   return componentes;
 }
 
+// Função para verificar a precedência de cada componente, operadores lógicos e palavras
 int precedencia(char* operacao) {
   if (strcmp(operacao, "NOT") == 0) {
     return 3;
@@ -96,6 +100,7 @@ int precedencia(char* operacao) {
   return 0;
 }
 
+// Função para converter os componentes no formato postfix, para poder realizar a busca
 char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tamanhoPostfix, int *tipoErro) {
   *tipoErro = 0;
 
@@ -157,6 +162,7 @@ char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tam
   return resultado;
 }
 
+// Função para avaliar o formato postfix, para retornar o conjunto de postagens
 Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade, int *tipoErro) {
   Set* pilha[MAX_PILHA];
   int topo = -1;

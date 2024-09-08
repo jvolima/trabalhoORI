@@ -9,6 +9,7 @@
 #define MAX_BUSCA 300
 
 int main() {
+  // Cria a hash com um número primo
   Hash *hash = criaHash(10007);
  
   FILE *arquivoTweets = fopen("files/corpus.csv", "r");
@@ -17,6 +18,7 @@ int main() {
     exit(1);
   }
 
+  // Leitura do arquivo e inserção na hash
   Postagem postagem;
   char linha[MAX_LINHA], *valor, *stringPalavra;
   while (fgets(linha, MAX_LINHA, arquivoTweets) != NULL) {
@@ -35,6 +37,7 @@ int main() {
     }
   }
 
+  // Interação com o usuário
   char escolha;
   char busca[MAX_BUSCA];
   while (1) {
@@ -56,6 +59,7 @@ int main() {
     printf("Formule a sua busca utilizando operadores lógicos (AND, OR, NOT): ");
     scanf(" %[^\n]", busca);
 
+    // Separar a string recebida em componentes
     int numComponentes;
     char **componentes = separarBuscaEmComponentes(busca, &numComponentes);
 
@@ -64,9 +68,11 @@ int main() {
       continue;
     }
 
+    // Converter os componentes para o formato postfix
     int tamanhoPostfix, tipoErro;
     char **postfix = converterComponentesParaPostfix(componentes, numComponentes, &tamanhoPostfix, &tipoErro);
     
+    // Tratamento de erros
     if (postfix == NULL) {
       switch (tipoErro) {
         case 1:
@@ -83,8 +89,10 @@ int main() {
       continue;
     }
 
+    // Encontrar postagens relacionadas a busca com base no postfix
     Set *resultado = avaliarPostfix(hash, postfix, tamanhoPostfix, &tipoErro);
 
+    // Tratamento de erros
     if (resultado == NULL) {
       switch (tipoErro) {
         case 1:
@@ -105,6 +113,7 @@ int main() {
       continue;
     }
 
+    // Imprimir postagens encontradas na busca
     for (beginSet(resultado); !endSet(resultado); nextSet(resultado)) {
       char linhaSaida[MAX_LINHA];
       Postagem postagemSaida;
