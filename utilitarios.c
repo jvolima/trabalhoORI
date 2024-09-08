@@ -100,8 +100,13 @@ int precedencia(char* operacao) {
   return 0;
 }
 
+// Função para verificar se componente é uma palavra
+int palavra(char *componente) {
+  return strcmp(componente, "NOT") != 0 && strcmp(componente, "AND") != 0 && strcmp(componente, "OR") != 0 && strcmp(componente, "(") != 0 && strcmp(componente, ")") != 0;
+}
+
 // Função para converter os componentes no formato postfix, para poder realizar a busca
-char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tamanhoPostfix, int *tipoErro) {
+char** converterComponentesParaPostfix(char **componentes, int tamanho, int *tamanhoPostfix, int *tipoErro) {
   *tipoErro = 0;
 
   char** resultado = (char**) malloc(MAX_PILHA * sizeof(char*));
@@ -118,7 +123,7 @@ char** converterComponentesParaPostfix(char** componentes, int tamanho, int *tam
   for (int i = 0; i < tamanho; i++) {
     char* componente = componentes[i];
 
-    if (strcmp(componente, "NOT") != 0 && strcmp(componente, "AND") != 0 && strcmp(componente, "OR") != 0 && strcmp(componente, "(") != 0 && strcmp(componente, ")") != 0) {
+    if (palavra(componente)) {
       if (ultimaPalavra) {
         *tipoErro = 2;
         return NULL;
@@ -216,7 +221,6 @@ Set* avaliarPostfix(Hash* hash, char** postfix, int quantidade, int *tipoErro) {
         Set* set2 = pilha[topo];
 
         pilha[topo] = uniaoSet(set1, set2);
-        operadorNot = 0;
     } else {
       int deuCerto;
       Set* conjunto = buscaPostagens(hash, postfix[i], &deuCerto);
