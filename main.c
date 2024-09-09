@@ -124,6 +124,8 @@ int main() {
       printf("%s\n", linhaSaida);
     }
 
+    printf("Quantidade de postagem(ns) encontrada(s): %d\n", tamanhoSet(resultado));
+
     for (int i = 0; i < numComponentes; i++) {
       free(componentes[i]);
     }
