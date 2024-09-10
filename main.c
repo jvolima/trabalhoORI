@@ -28,6 +28,8 @@ int main() {
     strtok(linha, ",");
     strtok(NULL, ",");
     valor = strtok(NULL, "\n");
+    
+    // Retira caracteres especiais e espaços vazios
     limparString(valor);
 
     stringPalavra = strtok(valor, " ");
@@ -38,21 +40,24 @@ int main() {
   }
 
   // Interação com o usuário
-  char escolha;
+  int escolha;
   char busca[MAX_BUSCA];
   while (1) {
     printf("(1) Buscar nova palavra\n(2) Sair da busca\nOpção: ");
-    if (scanf(" %c", &escolha) != 1) {
+    if (scanf(" %d", &escolha) != 1) {
+      while (getchar() != '\n');
       printf("(ERRO) Opção inválida!\n\n");
       continue;
     }
 
-    if (!(escolha == '1' || escolha == '2')) {
+    while (getchar() != '\n'); 
+
+    if (!(escolha == 1 || escolha == 2)) {
       printf("(ERRO) Opção inválida!\n\n");
       continue;
     }
 
-    if (escolha == '2') {
+    if (escolha == 2) {
       break;
     }
 
